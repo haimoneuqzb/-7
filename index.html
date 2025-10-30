@@ -72,21 +72,20 @@ footer {margin-top:10px;font-size:.8rem;color:#94a3b8;text-align:center;}
 <footer>اضغط Enter للحساب — ESC للمسح — Backspace للحذف</footer>
 
 <script>
-const display = document.getElementById('display');
-const degToggle = document.getElementById('degToggle');
+const display=document.getElementById('display');
+const degToggle=document.getElementById('degToggle');
 let isDegrees=false;
 degToggle.addEventListener('click',()=>{isDegrees=!isDegrees;degToggle.textContent=isDegrees?'DEG':'RAD';});
 
-function append(val){display.value+=val;}
+function append(v){display.value+=v;}
 function insertFunc(f){display.value+=f+'(';}
 function clearDisplay(){display.value='';}
 function backspace(){display.value=display.value.slice(0,-1);}
 
-function preprocess(expr){
-  let e=expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')
-           .replace(/π/g,'pi').replace(/%/g,'/100')
-           .replace(/(\d+)!/g,'factorial($1)');
-  return e;
+function preprocess(e){
+  return e.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')
+          .replace(/π/g,'pi').replace(/%/g,'/100')
+          .replace(/(\d+)!/g,'factorial($1)');
 }
 
 function degreeScope(){
@@ -102,13 +101,14 @@ function degreeScope(){
 
 function calculate(){
   const raw=display.value.trim();
-  if(!raw){alert('الرجاء إدخال عملية حسابية قبل الضغط على "="'); return;}
+  if(!raw){alert('الرجاء إدخال عملية قبل الضغط على "="'); return;}
   try{
     const expr=preprocess(raw);
     const result=math.evaluate(expr,degreeScope());
+    if(result===undefined || result===null || isNaN(result)){alert('يوجد خطأ في الأرقام أو الرموز'); return;}
     display.value=result;
   }catch{
-    alert('يوجد خطأ في العملية الحسابية! تحقق من الأرقام والرموز.');
+    alert('يوجد خطأ في الأرقام أو الرموز');
   }
 }
 
