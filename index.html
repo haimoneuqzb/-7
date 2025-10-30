@@ -63,7 +63,9 @@ footer {margin-top:10px;font-size:.8rem;color:#94a3b8;text-align:center;}
 
 <button onclick="append('0')">0</button>
 <button onclick="append('.')">.</button>
-<button class="equals" onclick="calculate()">=</button>
+
+<button class="equals" onclick="calculate()" type="button">=</button>
+
 <button onclick="append('+')">+</button>
 <button class="clear" onclick="clearDisplay()">C</button>
 <button onclick="backspace()">⌫</button>
@@ -105,8 +107,10 @@ function calculate(){
   try{
     const expr=preprocess(raw);
     const result=math.evaluate(expr,degreeScope());
-    if(result===undefined || result===null || isNaN(result)){alert('يوجد خطأ في الأرقام أو الرموز'); return;}
-    display.value=result;
+    if(result===undefined || result===null || (typeof result !== 'object' && isNaN(result))){alert('يوجد خطأ في الأرقام أو الرموز'); return;}
+    
+    // [التعديل 2]  استخدام .toString() لضمان عرض النتيجة كنص
+    display.value=result.toString();
   }catch{
     alert('يوجد خطأ في الأرقام أو الرموز');
   }
