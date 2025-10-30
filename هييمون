@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>الآلة الحاسبة — مهيمن</title>
+  <title>آلة حاسبة علمية — مهيمن</title>
+
+  <!-- تحميل math.js لاستخدام عمليات رياضية آمنة وموسعة -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@11.8.0/lib/browser/math.min.js"></script>
+
   <style>
     body {
       background: linear-gradient(135deg, #0f172a, #1e293b);
@@ -13,62 +17,73 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     h1 {
-      margin-bottom: 20px;
+      margin-bottom: 14px;
       color: #38bdf8;
       text-shadow: 0 0 10px #38bdf8;
+      font-size: 1.6rem;
     }
 
     .calculator {
       background: #1e293b;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 0 15px #0ea5e9;
-      width: 300px;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 0 20px rgba(14,165,233,0.12);
+      width: 360px;
+      max-width: 100%;
     }
 
-    input {
+    #display {
       width: 100%;
-      height: 60px;
-      font-size: 1.5rem;
+      height: 56px;
+      font-size: 1.2rem;
       text-align: right;
       border: none;
       outline: none;
       border-radius: 10px;
-      margin-bottom: 15px;
-      padding: 10px;
+      margin-bottom: 12px;
+      padding: 8px 12px;
       background: #0f172a;
       color: #38bdf8;
+      box-sizing: border-box;
     }
 
     .buttons {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
     }
 
     button {
-      padding: 20px;
-      font-size: 1.2rem;
+      padding: 14px 8px;
+      font-size: 1rem;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
       background: #334155;
       color: #fff;
-      transition: 0.2s;
+      transition: 0.12s;
+      user-select: none;
     }
 
     button:hover {
-      background: #38bdf8;
-      color: #0f172a;
+      transform: translateY(-2px);
+      background: #0ea5e9;
+      color: #052025;
+    }
+
+    .op {
+      background: #475569;
     }
 
     .equals {
-      background: #0ea5e9;
+      background: linear-gradient(90deg,#06b6d4,#0891b2);
       color: #fff;
       grid-column: span 2;
     }
@@ -77,43 +92,117 @@
       background: #ef4444;
       color: #fff;
     }
+
+    .wide {
+      grid-column: span 2;
+    }
+
+    .mode {
+      background: #f59e0b;
+      color: #07121a;
+    }
+
+    .small {
+      font-size: 0.9rem;
+      padding: 10px 6px;
+    }
+
+    footer {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <h1>آلة حاسبة — مهيمن</h1>
-  <div class="calculator">
-    <input type="text" id="display" readonly />
+  <h1>آلة حاسبة علمية — مهيمن</h1>
+
+  <div class="calculator" role="application" aria-label="آلة حاسبة علمية">
+    <input id="display" type="text" readonly aria-label="شاشة الآلة الحاسبة" />
     <div class="buttons">
+      <!-- Row 1: scientific -->
+      <button class="small mode" id="degToggle">RAD</button>
+      <button class="small op" onclick="insertFunc('sin')">sin</button>
+      <button class="small op" onclick="insertFunc('cos')">cos</button>
+      <button class="small op" onclick="insertFunc('tan')">tan</button>
+      <button class="small op" onclick="insertFunc('log10')">log</button>
+      <button class="small op" onclick="insertFunc('log')">ln</button>
+
+      <!-- Row 2 -->
+      <button onclick="append('(')">(</button>
+      <button onclick="append(')')">)</button>
+      <button onclick="append('π')">π</button>
+      <button onclick="append('e')">e</button>
+      <button class="op" onclick="insertFunc('sqrt')">√</button>
+      <button class="op" onclick="append('!')">n!</button>
+
+      <!-- Row 3 -->
       <button onclick="append('7')">7</button>
       <button onclick="append('8')">8</button>
       <button onclick="append('9')">9</button>
-      <button onclick="append('/')">÷</button>
+      <button class="op" onclick="append('÷')">÷</button>
+      <button class="op" onclick="append('^')">^</button>
+      <button class="op" onclick="insertFunc('abs')">abs</button>
 
+      <!-- Row 4 -->
       <button onclick="append('4')">4</button>
       <button onclick="append('5')">5</button>
       <button onclick="append('6')">6</button>
-      <button onclick="append('*')">×</button>
+      <button class="op" onclick="append('×')">×</button>
+      <button class="op" onclick="insertFunc('pow')">pow</button>
+      <button class="op" onclick="append('%')">%</button>
 
+      <!-- Row 5 -->
       <button onclick="append('1')">1</button>
       <button onclick="append('2')">2</button>
       <button onclick="append('3')">3</button>
-      <button onclick="append('-')">−</button>
+      <button class="op" onclick="append('−')">−</button>
+      <button onclick="insertFunc('exp')">exp</button>
+      <button onclick="insertFunc('sqrt')">root</button>
 
+      <!-- Row 6 -->
       <button onclick="append('0')">0</button>
       <button onclick="append('.')">.</button>
       <button class="equals" onclick="calculate()">=</button>
       <button onclick="append('+')">+</button>
-
       <button class="clear" onclick="clearDisplay()">C</button>
       <button onclick="backspace()">⌫</button>
     </div>
   </div>
 
+  <footer>اضغط Enter للحساب — ESC للمسح — Backspace للحذف</footer>
+
   <script>
     const display = document.getElementById('display');
+    const degToggle = document.getElementById('degToggle');
+    let isDegrees = false;
+
+    // إعداد math.js لتعرّف pi و e و factorial
+    const math = window.math;
+
+    // ضبط زر الدرجة/راديان
+    function updateDegLabel() {
+      degToggle.textContent = isDegrees ? 'DEG' : 'RAD';
+      degToggle.title = isDegrees ? 'الوضع بالدورات (درجات)' : 'الوضع بالراديان';
+      degToggle.classList.toggle('mode', isDegrees);
+    }
+
+    degToggle.addEventListener('click', () => {
+      isDegrees = !isDegrees;
+      updateDegLabel();
+    });
+
+    updateDegLabel();
 
     function append(value) {
       display.value += value;
+    }
+
+    function insertFunc(name) {
+      // بعض الدوال في math.js لها أسماء مختلفة أو تحتاج لتنسيق خاص
+      // نضيف اسم الدالة متبوعًا بفتحة قوس لسهولة الإدخال
+      display.value += name + '(';
     }
 
     function clearDisplay() {
@@ -124,13 +213,113 @@
       display.value = display.value.slice(0, -1);
     }
 
+    // مساعدة لتحويل استدعاءات الدوال المثلثية من درجات إلى راديان
+    function convertTrigToRadians(expr) {
+      // الدوال التي سنحولها: sin cos tan asin acos atan
+      const trigFuncs = ['sin','cos','tan','asin','acos','atan'];
+      let s = expr;
+      for (const fn of trigFuncs) {
+        s = replaceFunctionArgs(s, fn, arg => `(${arg}) * pi / 180`);
+      }
+      return s;
+    }
+
+    // يجد كل استدعاء fn(...) ويحوّل الوسيط عبر transformer
+    function replaceFunctionArgs(s, fn, transformer) {
+      let i = 0;
+      while (true) {
+        const idx = s.indexOf(fn + '(');
+        if (idx === -1) break;
+        // إيجاد القوس الموازن
+        let start = idx + fn.length + 1; // موقع بعد "(" 
+        let depth = 1;
+        let j = start;
+        while (j < s.length && depth > 0) {
+          if (s[j] === '(') depth++;
+          else if (s[j] === ')') depth--;
+          j++;
+        }
+        if (depth !== 0) break; // قوس غير مغلق، نوقف
+        const inner = s.substring(start, j - 1);
+        const transformed = transformer(inner);
+        // نضع بدلاً من fn(inner) => fn(transformed) so final becomes fn((inner) * pi/180)
+        s = s.slice(0, idx) + fn + '(' + transformed + ')' + s.slice(j);
+        // استمر من بعد idx لتفادي حلقة لانهاء
+      }
+      return s;
+    }
+
+    // تنظيف التعبير وتحويل رموز العرض إلى رموز قابلة للتقييم
+    function preprocessExpression(raw) {
+      let expr = raw.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-');
+      // استبدال π و e بالأسماء التي يفهمها math.js
+      expr = expr.replace(/π/g, 'pi');
+      // معامل النسبة المئوية: 50% => (50/100)
+      // تحويل كل عدد متبوعاً بـ % إلى (number/100)
+      expr = expr.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
+      // إذا الوضع درجات، نحتاج لتحويل معاملات الدوال المثلثية
+      if (isDegrees) {
+        expr = convertTrigToRadians(expr);
+      }
+      return expr;
+    }
+
     function calculate() {
       try {
-        display.value = eval(display.value);
-      } catch {
+        const raw = display.value.trim();
+        if (!raw) return;
+        const expr = preprocessExpression(raw);
+        // نستخدم math.evaluate لتنفيذ التعبيرات بأمان أغلب الأحيان
+        const result = math.evaluate(expr);
+        display.value = String(result);
+      } catch (e) {
+        console.error(e);
         display.value = 'خطأ';
       }
     }
+
+    // دعم لوحة المفاتيح
+    document.addEvent_listener('keydown', (e) => {
+      // السماح بالأرقام والعمليات الأساسية
+      const allowed = '0123456789+-*/.^()%!';
+      if (allowed.includes(e.key)) {
+        // منع السلوك الافتراضي لبعض المفاتيح كالمسافة
+        e.preventDefault();
+        // تحويل / و * إلى عرضية جميلة في الواجهة (optional)
+        const map = { '/': '÷', '*': '×' };
+        append(map[e.key] || e.key);
+        return;
+      }
+
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        calculate();
+        return;
+      }
+
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        backspace();
+        return;
+      }
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        clearDisplay();
+        return;
+      }
+
+      // مفاتيح خاصة يمكن تعيينها حسب الحاجة
+    });
+
+    // تحسين: دعم لصق التعبير (يعالج بعض الرموز)
+    display.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text');
+      // استبدالات بسيطة
+      const cleaned = text.replace(/\s+/g, '');
+      append(cleaned);
+    });
   </script>
 </body>
 </html>
