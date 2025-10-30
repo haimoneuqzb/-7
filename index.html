@@ -118,7 +118,7 @@
       <button onclick="append('3')">3</button>
       <button class="op" onclick="append('−')">−</button>
       <button onclick="insertFunc('exp')">exp</button>
-      <button class="op" onclick="insertFunc('sqrt')">root</button>
+      <button onclick="insertFunc('sqrt')">root</button>
 
       <button onclick="append('0')">0</button>
       <button onclick="append('.')">.</button>
@@ -136,22 +136,24 @@
     let isDegrees = false;
     const math = window.math;
 
-    function updateDegLabel() {
+    degToggle.addEventListener('click', () => { 
+      isDegrees = !isDegrees; 
       degToggle.textContent = isDegrees ? 'DEG' : 'RAD';
-    }
-    degToggle.addEventListener('click', () => { isDegrees = !isDegrees; updateDegLabel(); });
-    updateDegLabel();
+    });
 
     function append(value) { display.value += value; }
     function insertFunc(name) { display.value += name + '('; }
     function clearDisplay() { display.value = ''; }
     function backspace() { display.value = display.value.slice(0,-1); }
 
-    function preprocessExpression(raw) {
-      let expr = raw.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')
-                    .replace(/π/g,'pi').replace(/%/g,'/100')
-                    .replace(/(\d+)!/g,'factorial($1)');
-      return expr;
+    function preprocessExpression(expr) {
+      return expr
+        .replace(/×/g,'*')
+        .replace(/÷/g,'/')
+        .replace(/−/g,'-')
+        .replace(/π/g,'pi')
+        .replace(/%/g,'/100')
+        .replace(/(\d+)!/g,'factorial($1)');
     }
 
     function degreeTrigScope(math) {
@@ -167,13 +169,15 @@
 
     function calculate() {
       try {
-        const raw = display.value.trim();
+        let raw = display.value.trim();
         if(!raw) return;
-        const expr = preprocessExpression(raw);
-        const scope = degreeTrigScope(math);
-        const result = math.evaluate(expr, scope);
+        let expr = preprocessExpression(raw);
+        let result = math.evaluate(expr, degreeTrigScope(math));
         display.value = result;
-      } catch(e) { console.error(e); display.value = ''; }
+      } catch(e) {
+        console.error('Error in calculation:', e);
+        display.value = display.value || '0';
+      }
     }
 
     document.addEventListener('keydown', (e) => {
@@ -187,9 +191,8 @@
     display.addEventListener('paste', (e) => {
       e.preventDefault();
       const text = (e.clipboardData||window.clipboardData).getData('text');
-      const cleaned = text.replace(/\s+/g,'').replace(/\u00D7/g,'×').replace(/\u00F7/g,'÷').replace(/π/g,'π');
-      append(cleaned);
+      append(text.replace(/\s+/g,'').replace(/\u00D7/g,'×').replace(/\u00F7/g,'÷').replace(/π/g,'π'));
     });
   </script>
 </body>
-</html>
+  </html>
