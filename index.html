@@ -6,71 +6,19 @@
 <title>آلة حاسبة علمية — مهيمن</title>
 <script src="https://cdn.jsdelivr.net/npm/mathjs@11.8.0/dist/math.min.js"></script>
 <style>
-body {
-  background: #0f172a;
-  color: #fff;
-  font-family: "Tajawal", sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  margin: 0;
-  padding: 20px;
-}
-h1 {
-  margin-bottom: 14px;
-  color: #38bdf8;
-  text-shadow: 0 0 10px #38bdf8;
-  font-size: 1.6rem;
-}
-.calculator {
-  background: #1e293b;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 0 20px rgba(14,165,233,0.12);
-  width: 360px;
-  max-width: 100%;
-}
-#display {
-  width: 100%;
-  height: 56px;
-  font-size: 1.2rem;
-  text-align: right;
-  border: none;
-  outline: none;
-  border-radius: 10px;
-  margin-bottom: 12px;
-  padding: 8px 12px;
-  background: #0f172a;
-  color: #38bdf8;
-}
-.buttons {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
-}
-button {
-  padding: 14px 8px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: #334155;
-  color: #fff;
-  transition: 0.12s;
-}
-button:hover {
-  transform: translateY(-2px);
-  background: #0ea5e9;
-  color: #052025;
-}
-.op { background: #475569; }
-.equals { background: linear-gradient(90deg,#06b6d4,#0891b2); color:#fff; grid-column: span 2; }
-.clear { background: #ef4444; color:#fff; }
-.mode { background: #f59e0b; color:#07121a; }
-.small { font-size: 0.9rem; padding: 10px 6px; }
-footer { margin-top: 10px; font-size: 0.8rem; color: #94a3b8; text-align:center;}
+body {background:#0f172a;color:#fff;font-family:"Tajawal",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:20px;}
+h1 {margin-bottom:14px;color:#38bdf8;text-shadow:0 0 10px #38bdf8;font-size:1.6rem;}
+.calculator {background:#1e293b;border-radius:16px;padding:16px;box-shadow:0 0 20px rgba(14,165,233,0.12);width:360px;max-width:100%;}
+#display {width:100%;height:56px;font-size:1.2rem;text-align:right;border:none;outline:none;border-radius:10px;margin-bottom:12px;padding:8px 12px;background:#0f172a;color:#38bdf8;}
+.buttons {display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
+button {padding:14px 8px;font-size:1rem;border:none;border-radius:8px;cursor:pointer;background:#334155;color:#fff;transition:.12s;}
+button:hover {transform:translateY(-2px);background:#0ea5e9;color:#052025;}
+.op {background:#475569;}
+.equals {background:linear-gradient(90deg,#06b6d4,#0891b2);color:#fff;grid-column:span 2;}
+.clear {background:#ef4444;color:#fff;}
+.mode {background:#f59e0b;color:#07121a;}
+.small {font-size:.9rem;padding:10px 6px;}
+footer {margin-top:10px;font-size:.8rem;color:#94a3b8;text-align:center;}
 </style>
 </head>
 <body>
@@ -126,63 +74,56 @@ footer { margin-top: 10px; font-size: 0.8rem; color: #94a3b8; text-align:center;
 <script>
 const display = document.getElementById('display');
 const degToggle = document.getElementById('degToggle');
-let isDegrees = false;
-const math = window.math;
+let isDegrees=false;
+degToggle.addEventListener('click',()=>{isDegrees=!isDegrees;degToggle.textContent=isDegrees?'DEG':'RAD';});
 
-degToggle.addEventListener('click', () => {
-  isDegrees = !isDegrees;
-  degToggle.textContent = isDegrees?'DEG':'RAD';
-});
-
-function append(value){ display.value += value; }
-function insertFunc(name){ display.value += name+'('; }
-function clearDisplay(){ display.value=''; }
-function backspace(){ display.value = display.value.slice(0,-1); }
+function append(val){display.value+=val;}
+function insertFunc(f){display.value+=f+'(';}
+function clearDisplay(){display.value='';}
+function backspace(){display.value=display.value.slice(0,-1);}
 
 function preprocess(expr){
-  return expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')
-             .replace(/π/g,'pi').replace(/%/g,'/100')
-             .replace(/(\d+)!/g,'factorial($1)');
+  let e=expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')
+           .replace(/π/g,'pi').replace(/%/g,'/100')
+           .replace(/(\d+)!/g,'factorial($1)');
+  return e;
 }
 
 function degreeScope(){
   return {
-    sin:x=> math.sin(isDegrees? math.unit(x,'deg'):x),
-    cos:x=> math.cos(isDegrees? math.unit(x,'deg'):x),
-    tan:x=> math.tan(isDegrees? math.unit(x,'deg'):x),
-    asin:x=> isDegrees? math.asin(x)*180/math.pi: math.asin(x),
-    acos:x=> isDegrees? math.acos(x)*180/math.pi: math.acos(x),
-    atan:x=> isDegrees? math.atan(x)*180/math.pi: math.atan(x)
+    sin:x=>math.sin(isDegrees?math.unit(x,'deg'):x),
+    cos:x=>math.cos(isDegrees?math.unit(x,'deg'):x),
+    tan:x=>math.tan(isDegrees?math.unit(x,'deg'):x),
+    asin:x=>isDegrees?math.asin(x)*180/math.pi:math.asin(x),
+    acos:x=>isDegrees?math.acos(x)*180/math.pi:math.acos(x),
+    atan:x=>isDegrees?math.atan(x)*180/math.pi:math.atan(x)
   };
 }
 
 function calculate(){
-  const raw = display.value.trim();
-  if(!raw){
-    alert('الرجاء إدخال عملية حسابية قبل الضغط على "="');
-    return;
-  }
+  const raw=display.value.trim();
+  if(!raw){alert('الرجاء إدخال عملية حسابية قبل الضغط على "="'); return;}
   try{
-    const expr = preprocess(raw);
-    const result = math.evaluate(expr, degreeScope());
-    display.value = result;
-  }catch(e){
-    alert('يوجد خطأ في العملية الحسابية، تحقق من الأرقام والرموز!');
+    const expr=preprocess(raw);
+    const result=math.evaluate(expr,degreeScope());
+    display.value=result;
+  }catch{
+    alert('يوجد خطأ في العملية الحسابية! تحقق من الأرقام والرموز.');
   }
 }
 
 document.addEventListener('keydown',(e)=>{
   const allowed='0123456789+-*/.^()%!';
-  if(allowed.includes(e.key)){ e.preventDefault(); const map={'/':'÷','*':'×'}; append(map[e.key]||e.key); return; }
-  if(e.key==='Enter'){ e.preventDefault(); calculate(); return; }
-  if(e.key==='Backspace'){ e.preventDefault(); backspace(); return; }
-  if(e.key==='Escape'){ e.preventDefault(); clearDisplay(); return; }
+  if(allowed.includes(e.key)){e.preventDefault();const map={'/':'÷','*':'×'};append(map[e.key]||e.key);return;}
+  if(e.key==='Enter'){e.preventDefault();calculate();return;}
+  if(e.key==='Backspace'){e.preventDefault();backspace();return;}
+  if(e.key==='Escape'){e.preventDefault();clearDisplay();return;}
 });
 
 display.addEventListener('paste',(e)=>{
   e.preventDefault();
-  const text = (e.clipboardData||window.clipboardData).getData('text');
-  const cleaned = text.replace(/\s+/g,'').replace(/\u00D7/g,'×').replace(/\u00F7/g,'÷').replace(/π/g,'π');
+  const text=(e.clipboardData||window.clipboardData).getData('text');
+  const cleaned=text.replace(/\s+/g,'').replace(/\u00D7/g,'×').replace(/\u00F7/g,'÷').replace(/π/g,'π');
   append(cleaned);
 });
 </script>
