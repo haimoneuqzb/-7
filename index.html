@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>آلة حاسبة علمية — مهيمن</title>
   <script src="https://cdn.jsdelivr.net/npm/mathjs@11.8.0/dist/math.min.js"></script>
   <style>
     body {
-      background: linear-gradient(135deg, #0f172a, #1e293b);
+      background: linear-gradient(135deg, #1e3a8a, #9333ea);
       color: #fff;
       font-family: "Tajawal", sans-serif;
       display: flex;
@@ -18,66 +18,92 @@
       margin: 0;
       padding: 20px;
       box-sizing: border-box;
+      transition: background 2s linear;
+      animation: bgChange 20s infinite alternate;
     }
+
+    @keyframes bgChange {
+      0% {background: linear-gradient(135deg, #1e3a8a, #9333ea);}
+      25% {background: linear-gradient(135deg, #ea580c, #facc15);}
+      50% {background: linear-gradient(135deg, #059669, #10b981);}
+      75% {background: linear-gradient(135deg, #8b5cf6, #ec4899);}
+      100% {background: linear-gradient(135deg, #1e3a8a, #9333ea);}
+    }
+
     h1 {
       margin-bottom: 14px;
-      color: #38bdf8;
-      text-shadow: 0 0 10px #38bdf8;
-      font-size: 1.6rem;
+      color: #fcd34d;
+      text-shadow: 0 0 15px #fcd34d;
+      font-size: 1.7rem;
     }
+
     .calculator {
-      background: #1e293b;
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 0 20px rgba(14,165,233,0.12);
+      background: rgba(17,24,39,0.95);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 0 40px rgba(252, 211, 77,0.5);
       width: 360px;
       max-width: 100%;
+      transition: box-shadow 0.3s, background 0.3s;
     }
+
     #display {
       width: 100%;
-      height: 56px;
-      font-size: 1.2rem;
+      height: 60px;
+      font-size: 1.4rem;
       text-align: right;
       border: none;
       outline: none;
-      border-radius: 10px;
+      border-radius: 12px;
       margin-bottom: 12px;
-      padding: 8px 12px;
-      background: #0f172a;
-      color: #38bdf8;
-      box-sizing: border-box;
+      padding: 10px 14px;
+      background: #fefefe;
+      color: #111827;
+      font-weight: bold;
+      transition: background 0.3s, color 0.3s;
     }
+
     .buttons {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
-      gap: 8px;
+      gap: 10px;
     }
+
     button {
       padding: 14px 8px;
       font-size: 1rem;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       cursor: pointer;
-      background: #334155;
-      color: #fff;
-      transition: 0.12s;
+      background: #374151;
+      color: #fefefe;
+      transition: transform 0.1s, background 0.2s, box-shadow 0.3s;
       user-select: none;
     }
+
     button:hover {
-      transform: translateY(-2px);
-      background: #0ea5e9;
-      color: #052025;
+      transform: translateY(-3px);
+      background: #f59e0b;
+      color: #111827;
+      box-shadow: 0 0 10px rgba(245,158,11,0.7);
     }
-    .op { background: #475569; }
+
+    .op { background: #4b5563; }
     .equals {
-      background: linear-gradient(90deg,#06b6d4,#0891b2);
-      color: #fff;
+      background: linear-gradient(90deg,#f59e0b,#d97706);
+      color: #111827;
       grid-column: span 2;
+      transition: transform 0.1s, box-shadow 0.2s;
     }
+    .equals:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 20px rgba(245,158,11,0.6);
+    }
+
     .clear { background: #ef4444; color: #fff; }
-    .mode { background: #f59e0b; color: #07121a; }
+    .mode { background: #3b82f6; color: #fff; }
     .small { font-size: 0.9rem; padding: 10px 6px; }
-    footer { margin-top: 10px; font-size: 0.8rem; color: #94a3b8; text-align: center; }
+    footer { margin-top: 12px; font-size: 0.8rem; color: #e5e7eb; text-align: center; }
   </style>
 </head>
 <body>
@@ -146,53 +172,14 @@
     function clearDisplay() { display.value = ''; }
     function backspace() { display.value = display.value.slice(0,-1); }
 
-    function preprocessExpression(expr) {
-      return expr
-        .replace(/×/g,'*')
-        .replace(/÷/g,'/')
-        .replace(/−/g,'-')
-        .replace(/π/g,'pi')
-        .replace(/%/g,'/100')
-        .replace(/(\d+)!/g,'factorial($1)');
+    function preprocessExpression(expr){
+      return expr.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')
+                 .replace(/π/g,'pi').replace(/%/g,'/100')
+                 .replace(/(\d+)!/g,'factorial($1)');
     }
 
-    function degreeTrigScope(math) {
+    function degreeTrigScope(math){
       return {
-        sin: x => math.sin(isDegrees ? math.unit(x,'deg') : x),
-        cos: x => math.cos(isDegrees ? math.unit(x,'deg') : x),
-        tan: x => math.tan(isDegrees ? math.unit(x,'deg') : x),
-        asin: x => isDegrees ? math.asin(x)*180/math.pi : math.asin(x),
-        acos: x => isDegrees ? math.acos(x)*180/math.pi : math.acos(x),
-        atan: x => isDegrees ? math.atan(x)*180/math.pi : math.atan(x)
-      };
-    }
-
-    function calculate() {
-      try {
-        let raw = display.value.trim();
-        if(!raw) return;
-        let expr = preprocessExpression(raw);
-        let result = math.evaluate(expr, degreeTrigScope(math));
-        display.value = result;
-      } catch(e) {
-        console.error('Error in calculation:', e);
-        display.value = display.value || '0';
-      }
-    }
-
-    document.addEventListener('keydown', (e) => {
-      const allowed = '0123456789+-*/.^()%!';
-      if(allowed.includes(e.key)) { e.preventDefault(); const map={'/':'÷','*':'×'}; append(map[e.key]||e.key); return; }
-      if(e.key==='Enter') { e.preventDefault(); calculate(); return; }
-      if(e.key==='Backspace') { e.preventDefault(); backspace(); return; }
-      if(e.key==='Escape') { e.preventDefault(); clearDisplay(); return; }
-    });
-
-    display.addEventListener('paste', (e) => {
-      e.preventDefault();
-      const text = (e.clipboardData||window.clipboardData).getData('text');
-      append(text.replace(/\s+/g,'').replace(/\u00D7/g,'×').replace(/\u00F7/g,'÷').replace(/π/g,'π'));
-    });
-  </script>
-</body>
-  </html>
+        sin: x=> math.sin(isDegrees? math.unit(x,'deg'): x),
+        cos: x=> math.cos(isDegrees? math.unit(x,'deg'): x),
+        tan: x
